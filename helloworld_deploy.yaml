@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  namespace: hello-world
+  labels:
+    app: hello-world
+  annotations:
+    # Container Image Automated Updates
+    flux.weave.works/automated: "true"
+    # do not apply this manifest on the cluster
+    #flux.weave.works/ignore: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-world
+        image: 047923129740.dkr.ecr.us-east-1.amazonaws.com/week12-app:6e46a8f
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
